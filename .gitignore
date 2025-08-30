@@ -75,6 +75,9 @@ training-data/
 *.pkl
 *.pickle
 
+# Whitelist specific demo files
+!all_data_demo.csv
+
 # Archives
 *.zip
 *.tar.gz
