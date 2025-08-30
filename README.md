@@ -55,6 +55,50 @@ We used supervised learning with our labelled data and tested different approach
 
 Our architecture employs a sophisticated multi-tower design:
 
+### 🏗️ Multi-Tower Architecture
+
+1. **Text Tower**: Utilizes a pre-trained variant of BERT, called bert-base-uncased. This tower converts the "review text" and "response text" features into a holistic 768-dimensional vector to capture semantic meaning and context, which is then compressed to 128 dimensions using Principal Component Analysis (PCA) while preserving 85.43% of the variance.
+
+2. **User Tower**: Uses the embedding module from PyTorch to learn a unique 32-dimensional vector representation for each user, capturing user-specific behavioral patterns and review history.
+
+3. **Business Tower**: Implements a Sequential Neural Network that consolidates all business-related features, including Google Maps ID embeddings (64 dimensions), price tier embeddings (4 dimensions), category tag embeddings (16 dimensions), misc tag embeddings (16 dimensions), and 20 engineered numerical features.
+
+4. **Cross-Attention Mechanism**: The text tower queries the user tower and business tower outputs using multi-head attention (8 heads), allowing the model to dynamically weigh the importance of user behaviour and business context based on the specific language used in a review.
+
+### 🔄 Data Flow Diagram
+
+```
+Raw Review Data
+       ↓
+┌─────────────────────────────────────────────────────────────┐
+│                    Feature Engineering                      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │ Text-Based  │  │User Behavior│  │  Business Context   │ │
+│  │  Features   │  │  Features   │  │     Features        │ │
+│  │   (8)      │  │    (4)      │  │       (3)           │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+       ↓
+┌─────────────────────────────────────────────────────────────┐
+│                    Multi-Tower Model                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │  Text Tower │  │ User Tower  │  │   Business Tower    │ │
+│  │ (BERT+PCA)  │  │  (32-dim)   │  │   (SNN + Embed)    │ │
+│  │  (128-dim)  │  │             │  │     (120-dim)       │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+│           ↓              ↓              ↓                  │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │              Cross-Attention Mechanism                  │ │
+│  │              (Multi-Head: 8 heads)                     │ │
+│  └─────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+       ↓
+┌─────────────────────────────────────────────────────────────┐
+│                    Classification Layer                     │
+│              (4 classes: Relevant, Spam, Rant, Ad)        │
+└─────────────────────────────────────────────────────────────┘
+```
+
 1. **Text Tower**: Utilizes a pre-trained variant of BERT, called bert-base-uncased. This tower converts the "review text" and "response text" features into a holistic 768-dimensional vector to capture semantic meaning and context, which is then compressed to 128 dimensions using Principal Component Analysis (PCA) while preserving 85.43% of the variance.
 
 2. **User Tower**: Uses the embedding module from PyTorch to learn a unique 32-dimensional vector representation for each user, capturing user-specific behavioral patterns and review history.
