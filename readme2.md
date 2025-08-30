@@ -12,31 +12,17 @@ This project is meant to be run on Google Colab. However, you may also choose to
 pip install torch transformers pandas numpy scikit-learn tqdm vaderSentiment textstat
 ```
 
-### Running the Model
+### 1. Training the Model
 
-1. **Data Preparation** (if needed):
-   ```python
-   # Run the data preparation script first
-   python prepare_data.py
-   ```
+1. Open `BertBertScript.ipynb` in Jupyter Notebook or Google Colab
+2. Run all cells **up to the training part** to train the model
+3. The training will create the necessary model files
 
-2. **Training the Model**:
-   ```python
-   # Open BertBert2.ipynb in Jupyter/Colab
-   # Run all cells to train the model
-   # The model will be saved as 'bertbert2.bin'
-   ```
+### 2. Testing the Model
 
-3. **Testing the Model**:
-   ```python
-   # Load the trained model
-   model = MainModel(...)
-   model.load_state_dict(torch.load('bertbert2.bin'))
-   model.eval()
-   
-   # Make predictions
-   run bertberttest.ipynb
-   ```
+1. In the same notebook, run the **last cell**
+2. This cell takes `all_data_demo.csv` as input
+3. It will output a file with classification results.
 
 ## Inspiration
 The challenge we tackled was designing an AI system that outperforms current models in detecting the quality and relevancy of location-based reviews. Our inspiration came from the growing difficulty in identifying genuine reviews on platforms such as Google Maps and Yelp. Spam, misleading rants, and advertisements frequently distort the credibility of these platforms, which harms both users and businesses. We wanted to build a system that could accurately classify reviews as relevant, spam, rant, or advertisement, thereby ensuring more reliable insights for all stakeholders.
